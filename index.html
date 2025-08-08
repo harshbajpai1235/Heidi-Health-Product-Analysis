@@ -1,0 +1,3844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heidi Health Product Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #0a0a0a;
+            overflow-x: hidden;
+        }
+
+        /* Grid Background */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        /* Intro Section Styles */
+        .intro-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            background: radial-gradient(circle at center, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+        }
+
+        .intro-content {
+            text-align: center;
+            max-width: 1200px;
+            z-index: 2;
+            width: 100%;
+            padding: 0 2rem;
+        }
+
+        .main-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 0.2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+            white-space: nowrap;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #a0aec0;
+            margin-bottom: 2rem;
+            font-style: italic;
+            line-height: 1.6;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .author-info {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0 0.5rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .author-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        .author-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .author-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .author-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+
+        .portfolio-link {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        }
+
+        .portfolio-link:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea) !important;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Vertical Path Navigation */
+        .spiral-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow: hidden;
+            margin-top: -2rem;
+            padding-top: 2rem;
+        }
+
+        /* Vertical Connection Line */
+        .connection-line {
+            position: absolute;
+            width: 8px;
+            height: 1000px;
+            background: linear-gradient(180deg, #667eea, #764ba2, #f093fb);
+            border-radius: 4px;
+            z-index: 1;
+            animation: lineGlow 3s ease-in-out infinite alternate;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .thumbnail-grid {
+            position: relative;
+            width: 400px;
+            height: 1000px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+            padding: 60px 0;
+        }
+
+        .thumbnail {
+            position: relative;
+            width: 320px;
+            height: 280px;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            background: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.1);
+            border-color: #667eea;
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+            z-index: 20;
+        }
+
+        .thumbnail-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+        }
+
+        .thumbnail-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.3;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Connection dots */
+        .thumbnail::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            background: #667eea;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+            z-index: 15;
+        }
+
+        /* Remove dot from last thumbnail */
+        .thumbnail:last-child::after {
+            display: none;
+        }
+
+        /* Floating animation for all thumbnails */
+        .thumbnail {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .thumbnail:nth-child(2) { animation-delay: 0.8s; }
+        .thumbnail:nth-child(3) { animation-delay: 1.6s; }
+        .thumbnail:nth-child(4) { animation-delay: 2.4s; }
+        .thumbnail:nth-child(5) { animation-delay: 3.2s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes lineGlow {
+            0% { filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.3)); }
+            100% { filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.6)); }
+        }
+
+        /* Storytelling Theme Styles */
+        .story-hero {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 20px;
+            margin-bottom: 3rem;
+        }
+
+        .story-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .story-subtitle {
+            font-size: 1.3rem;
+            color: #a0aec0;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .story-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .story-timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            transform: translateX(-50%);
+        }
+
+        .story-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .story-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .story-year {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            min-width: 120px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .story-content {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .story-chapter {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #e2e8f0;
+        }
+
+        .pivot-question {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(26, 32, 44, 0.2);
+            border-left: 3px solid #1a202c;
+            border-radius: 0 8px 8px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        /* Section Navigation */
+        .section-nav {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            display: none;
+        }
+
+        .back-to-overview {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .back-to-overview:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Animations */
+        @keyframes titleGlow {
+            0% { filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5)); }
+            100% { filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.8)); }
+        }
+
+        @keyframes spiralRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-title { 
+                font-size: 2rem; 
+                white-space: normal;
+                line-height: 1.2;
+            }
+            .subtitle { font-size: 1.2rem; }
+            .thumbnail-grid { width: 320px; height: 800px; }
+            .thumbnail { width: 260px; height: 240px; margin: 25px 0; }
+            .connection-line { height: 800px; width: 6px; }
+            
+            .thumbnail-title { font-size: 1.8rem; }
+            .thumbnail-content { padding: 1.5rem; }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .main-title { 
+                font-size: 1.8rem; 
+                white-space: normal;
+                line-height: 1.2;
+            }
+            .subtitle { font-size: 1rem; }
+            .thumbnail-grid { width: 300px; height: 700px; }
+            .thumbnail { width: 240px; height: 220px; margin: 20px 0; }
+            .connection-line { height: 700px; width: 5px; }
+            .thumbnail-title { font-size: 1.6rem; }
+            .thumbnail-content { padding: 1.2rem; }
+        }
+
+        /* Original Section Styles (keeping existing theme) */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+        
+        .timeline {
+            background: white;
+            margin: 2rem 0;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideIn 0.8s ease forwards;
+        }
+        
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.6s; }
+        .timeline-item:nth-child(5) { animation-delay: 0.8s; }
+        
+        .timeline-date {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            min-width: 120px;
+            text-align: center;
+            margin-right: 2rem;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .timeline-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2D3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-desc {
+            color: #4A5568;
+            font-size: 0.95rem;
+        }
+        
+        .pivot-analysis {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            color: white;
+            box-shadow: 0 20px 40px rgba(255, 107, 107, 0.3);
+        }
+        
+        .pivot-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            color: #1a202c;
+        }
+        
+        .pivot-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .pivot-card {
+            background: rgba(255,255,255,0.15);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .pivot-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            color: #1a202c;
+            font-weight: 800;
+        }
+        
+        .pivot-card .icon {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+        
+        .strategy-lessons {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .lessons-hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .lessons-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .lessons-subtitle {
+            font-size: 1.2rem;
+            color: #a0aec0;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .lesson-card {
+            padding: 2rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #2d3748;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+        
+        .lesson-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+        
+        .lesson-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .lesson-icon {
+            font-size: 1.8rem;
+            opacity: 0.8;
+        }
+        
+        .lesson-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0.5rem 0 1rem 0;
+            color: #2d3748;
+            line-height: 1.4;
+        }
+
+        .lesson-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        /* Section 2 Unique Styling */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 3rem 0 2rem 0;
+            gap: 1rem;
+        }
+
+        .divider-line {
+            height: 2px;
+            width: 100px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+        }
+
+        .section-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .market-reality-hero {
+            text-align: center;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(254, 202, 87, 0.1));
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .market-reality-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57);
+        }
+
+        .reality-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .reality-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(255, 107, 107, 0.2);
+        }
+
+        .reality-subtitle {
+            font-size: 1.3rem;
+            color: #a0aec0;
+            font-style: italic;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .reality-accent {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57);
+            margin: 2rem auto 0 auto;
+            border-radius: 2px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Enhanced Documentation Crisis Styling */
+        .documentation-crisis {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .crisis-hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .crisis-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .crisis-subtitle {
+            font-size: 1.2rem;
+            color: #a0aec0;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .crisis-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .crisis-stat-card {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crisis-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .crisis-stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .crisis-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .stat-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .crisis-stat-card .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .crisis-stat-card .stat-label {
+            font-size: 1rem;
+            font-weight: 600;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .crisis-sources {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .sources-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+        }
+
+        .sources-content {
+            margin-bottom: 1.5rem;
+        }
+
+        .source-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+
+        .source-number {
+            background: #667eea;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .source-text {
+            font-size: 0.95rem;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+
+        .matrix-disclaimer {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: #856404;
+            line-height: 1.5;
+        }
+        
+        .transition {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            margin: 2rem 0;
+        }
+        
+        .transition h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+        
+        .cta-arrow {
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+            margin-top: 1rem;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            text-align: center;
+            background: rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            color: #1a202c;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            color: #1a202c;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .pivot-grid { grid-template-columns: 1fr; }
+            .timeline-item { flex-direction: column; text-align: center; }
+            .timeline-date { margin-bottom: 1rem; margin-right: 0; }
+            .stats-row { grid-template-columns: 1fr; }
+        }
+
+        /* Section 2 Styles */
+        .stats-overview {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            color: white;
+            transform: scale(0.9);
+            animation: scaleIn 0.6s ease forwards;
+        }
+        
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.4s; }
+        .stat-card:nth-child(4) { animation-delay: 0.6s; }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .pain-matrix-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #2D3748;
+        }
+        
+        .pain-matrix {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border: 2px solid #E2E8F0;
+            border-radius: 15px;
+            margin: 2rem 0;
+            background: linear-gradient(45deg, #f8fafc 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8fafc 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8fafc 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8fafc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        
+        .matrix-axis {
+            position: absolute;
+            font-weight: 600;
+            color: #4A5568;
+        }
+        
+        .x-axis {
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .y-axis {
+            left: -80px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+        
+        .quadrant-label {
+            position: absolute;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #718096;
+            opacity: 0.7;
+        }
+        
+        .q1 { top: 10px; right: 10px; }
+        .q2 { top: 10px; left: 10px; }
+        .q3 { bottom: 10px; left: 10px; }
+        .q4 { bottom: 10px; right: 10px; }
+        
+        .pain-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInPoint 0.8s ease forwards;
+        }
+        
+        .pain-point.high-impact { background: #ff6b6b; }
+        .pain-point.medium-impact { background: #feca57; }
+        .pain-point.low-impact { background: #48bb78; }
+        
+        .pain-point:hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .pain-tooltip {
+            position: absolute;
+            background: #2D3748;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+        
+        .pain-point:hover .pain-tooltip {
+            opacity: 1;
+        }
+        
+        .real-quotes {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            color: white;
+        }
+        
+        .quotes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .quote-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.8s ease forwards;
+        }
+        
+        .quote-card:nth-child(2) { animation-delay: 0.2s; }
+        .quote-card:nth-child(3) { animation-delay: 0.4s; }
+        .quote-card:nth-child(4) { animation-delay: 0.6s; }
+        
+        .quote-icon {
+            font-size: 2rem;
+            opacity: 0.3;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+        
+        .quote-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+        
+        .quote-source {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: 600;
+        }
+        
+        .psychology-analysis {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .psychology-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin-top: 2rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .psychology-card {
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            text-align: center;
+            transform: rotateY(0deg);
+            transition: transform 0.6s ease;
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .psychology-card:hover {
+            transform: rotateY(5deg) translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .psych-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .psych-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2D3748;
+            margin-bottom: 1rem;
+        }
+        
+        .psych-description {
+            color: #4A5568;
+            line-height: 1.6;
+        }
+        
+        .heidi-approach {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .approach-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .approach-card {
+            background: rgba(255,255,255,0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .approach-card.traditional {
+            border-left: 5px solid #ff6b6b;
+        }
+        
+        .approach-card.heidi {
+            border-left: 5px solid #48bb78;
+        }
+        
+        .approach-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2D3748;
+        }
+        
+        .approach-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .approach-list li {
+            padding: 0.5rem 0;
+            color: #4A5568;
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .approach-list li::before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .approach-card.heidi .approach-list li::before {
+            content: "✓";
+            color: #48bb78;
+        }
+        
+        @keyframes scaleIn {
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fadeInPoint {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .legend-item span {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .legend-dot.high-impact { background: #ff6b6b; }
+        .legend-dot.medium-impact { background: #feca57; }
+        .legend-dot.low-impact { background: #48bb78; }
+
+        /* Section 3 Styles */
+        .funding-timeline {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+
+        
+        .timeline-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #f8fafc 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8fafc 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8fafc 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8fafc 75%);
+            background-size: 30px 30px;
+            opacity: 0.1;
+        }
+        
+        .funding-rounds {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin: 3rem 0;
+            z-index: 2;
+        }
+        
+        .funding-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+            z-index: 1;
+        }
+        
+        .funding-round {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            min-width: 250px;
+            text-align: center;
+            border: 3px solid #667eea;
+            position: relative;
+            z-index: 2;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.8s ease forwards;
+        }
+        
+        .funding-round:nth-child(2) { animation-delay: 0.3s; }
+        .funding-round:nth-child(3) { animation-delay: 0.6s; }
+        
+        .funding-round.highlight {
+            border-color: #ff6b6b;
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .round-date {
+            font-size: 0.9rem;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .round-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2D3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .round-lead {
+            font-size: 1rem;
+            color: #4A5568;
+            margin-bottom: 1rem;
+        }
+        
+        .round-milestone {
+            font-size: 0.9rem;
+            color: #718096;
+            font-style: italic;
+        }
+        
+
+        
+        .anthropic-highlight {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            color: #2D3748;
+        }
+        
+        .anthropic-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .anthropic-insights {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin-top: 2rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .insight-card {
+            background: rgba(255,255,255,0.9);
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transform: rotateY(0deg);
+            transition: transform 0.3s ease;
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .insight-card:hover {
+            transform: rotateY(5deg) translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .insight-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .insight-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2D3748;
+        }
+        
+        .insight-desc {
+            color: #4A5568;
+            line-height: 1.6;
+        }
+        
+        .market-sizing {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .market-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .market-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .market-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        .market-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2D3748;
+            margin-bottom: 1rem;
+        }
+        
+        .market-size {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .market-growth {
+            font-size: 1.1rem;
+            color: #4A5568;
+            margin-bottom: 0.5rem;
+        }
+        
+        .market-year {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        .competitive-analysis {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            color: white;
+        }
+        
+        .competitive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .competitor-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+        }
+        
+        .competitor-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .competitor-funding {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #feca57;
+            margin-bottom: 1rem;
+        }
+        
+        .competitor-stage {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .competitor-advantage {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+        
+
+        
+        .source-note {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 4px solid #4299e1;
+        }
+        
+        .source-note h3 {
+            font-size: 1.1rem;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .source-note p {
+            font-size: 0.9rem;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        /* Section 4 Styles */
+        .innovation-intro {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .intro-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #f8fafc 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8fafc 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8fafc 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8fafc 75%);
+            background-size: 30px 30px;
+            opacity: 0.1;
+        }
+        
+        .innovation-philosophy {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #4A5568;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+            line-height: 1.8;
+        }
+        
+        .philosophy-highlight {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+        
+        .product-innovation-note {
+            background: rgba(255, 255, 255, 0.9);
+            border-left: 4px solid #fbbf24;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .note-icon {
+            font-size: 1.5rem;
+            color: #fbbf24;
+            flex-shrink: 0;
+        }
+        
+        .note-content {
+            font-size: 1rem;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .features-showcase {
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: slideUp 1s ease forwards;
+        }
+        
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.4s; }
+        .feature-card:nth-child(4) { animation-delay: 0.6s; }
+        .feature-card:nth-child(5) { animation-delay: 0.8s; }
+        
+        .feature-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .feature-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2D3748;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 0.8rem;
+            border-radius: 15px;
+            color: white;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .feature-status {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .feature-subtitle {
+            font-size: 1.3rem;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .feature-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        
+        .feature-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #4A5568;
+        }
+        
+        .feature-description strong {
+            color: #2D3748;
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        .feature-mockup {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px dashed #cbd5e0;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .mockup-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4A5568;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .mockup-elements {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            width: 100%;
+        }
+        
+        .mockup-element {
+            background: white;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            color: #2D3748;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mockup-element::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .user-story {
+            background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #38b2ac;
+        }
+        
+        .user-story-label {
+            font-size: 0.9rem;
+            color: #2c7a7b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-story-text {
+            font-size: 1.1rem;
+            color: #1a202c;
+            font-style: italic;
+            line-height: 1.6;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .metric-item {
+            background: linear-gradient(135deg, #fff5f5, #fed7d7);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #f56565;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: #742a2a;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-desc {
+            font-size: 0.9rem;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+        
+        .pulse-special {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border: none !important;
+            color: white;
+        }
+        
+        .pulse-special .feature-title,
+        .pulse-special .feature-subtitle {
+            color: white;
+        }
+        
+        .pulse-special .feature-description {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .pulse-special .feature-description strong {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .pulse-special .mockup-title {
+            color: #2D3748;
+        }
+        
+        .pulse-mockup {
+            background: rgba(255,255,255,0.95);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .pulse-widget {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .pulse-indicator {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .pulse-good { background: linear-gradient(135deg, #48bb78, #38a169); }
+        .pulse-warning { background: linear-gradient(135deg, #ed8936, #dd6b20); }
+        
+
+        
+        .strategic-impact {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .impact-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .impact-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        .impact-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .impact-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2D3748;
+            margin-bottom: 1rem;
+        }
+        
+        .impact-desc {
+            color: #4A5568;
+            line-height: 1.6;
+        }
+
+        /* Section 5 Styles */
+        .personal-intro {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .intro-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+        }
+        
+        .personal-statement {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .highlight-text {
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .timeline-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #f8fafc 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8fafc 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8fafc 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8fafc 75%);
+            background-size: 30px 30px;
+            opacity: 0.1;
+        }
+        
+        .timeline-title {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: #2D3748;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .timeline-phases {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .timeline-connector {
+            position: absolute;
+            left: 4rem;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 2px;
+            z-index: 1;
+        }
+        
+        .phase-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            position: relative;
+            transform: translateX(-50px);
+            opacity: 0;
+            animation: slideInLeft 0.8s ease forwards;
+        }
+        
+        .phase-card:nth-child(2) { animation-delay: 0.3s; }
+        .phase-card:nth-child(3) { animation-delay: 0.6s; }
+        
+        .phase-icon {
+            min-width: 80px;
+            min-height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .phase-content {
+            flex: 1;
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .phase-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .phase-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2D3748;
+        }
+        
+        .phase-duration {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .phase-activities {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .phase-activities li {
+            font-size: 1.1rem;
+            color: #4A5568;
+            margin-bottom: 0.8rem;
+            padding-left: 2rem;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .phase-activities li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .phase-focus {
+            background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+            font-style: italic;
+            color: #2c7a7b;
+            font-weight: 500;
+        }
+        
+        .skills-showcase {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            color: white;
+        }
+        
+        .skills-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin-top: 2rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .skill-category {
+            background: rgba(255,255,255,0.1);
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .skill-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .skill-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .skill-list {
+            font-size: 1rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+        
+        .motivation-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .motivation-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #2D3748;
+        }
+        
+        .motivation-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .motivation-card {
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: floatUp 1s ease forwards;
+        }
+        
+        .motivation-card:nth-child(1) { 
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            animation-delay: 0.2s;
+        }
+        .motivation-card:nth-child(2) { 
+            background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
+            animation-delay: 0.4s;
+        }
+        .motivation-card:nth-child(3) { 
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            animation-delay: 0.6s;
+        }
+        .motivation-card:nth-child(4) { 
+            background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+            animation-delay: 0.8s;
+        }
+        
+        .motivation-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 4s infinite;
+        }
+        
+        .motivation-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .motivation-text {
+            font-size: 1.1rem;
+            color: #2D3748;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .closing-statement {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 4rem 2rem;
+            margin: 3rem 0;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .closing-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.05) 0%, transparent 50%);
+        }
+        
+        .closing-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .closing-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+        
+        .closing-text {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .closing-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .closing-cta {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .closing-cta:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes floatUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation Classes */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-on-scroll.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .animate-fade-in {
+            opacity: 0;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-fade-in.animate-in {
+            opacity: 1;
+        }
+
+        .animate-slide-left {
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-slide-left.animate-in {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .animate-slide-right {
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-slide-right.animate-in {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .animate-scale-in {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-scale-in.animate-in {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .animate-bounce-up {
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .animate-bounce-up.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered animations */
+        .stagger-animate > * {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stagger-animate.animate-in > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-animate.animate-in > *:nth-child(1) { transition-delay: 0.1s; }
+        .stagger-animate.animate-in > *:nth-child(2) { transition-delay: 0.2s; }
+        .stagger-animate.animate-in > *:nth-child(3) { transition-delay: 0.3s; }
+        .stagger-animate.animate-in > *:nth-child(4) { transition-delay: 0.4s; }
+        .stagger-animate.animate-in > *:nth-child(5) { transition-delay: 0.5s; }
+
+        /* Initial load animations */
+        .initial-load {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .initial-load.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Grid Background -->
+    <div class="grid-bg"></div>
+
+    <!-- Intro Section with Spiral Navigation -->
+    <div class="intro-section">
+        <div class="intro-content">
+            <h1 class="main-title initial-load">Heidi Health Product Analysis</h1>
+            <p class="subtitle initial-load">A Product Deep-Dive by Harsh Bajpai</p>
+            <p class="initial-load" style="font-size: 1.1rem; color: #a0aec0; margin-bottom: 2rem;">
+                This isn't just an application. It's a journey through Heidi's evolution, challenges, and where I believe I can learn and contribute next.
+            </p>
+            
+            <div class="author-info initial-load">
+                <div class="author-name">Harsh Bajpai</div>
+                <div class="author-links">
+                                    <a href="mailto:bajpaih03@gmail.com" class="author-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    bajpaih03@gmail.com
+                </a>
+                    <a href="https://www.linkedin.com/in/harsh-bajpai22/" target="_blank" class="author-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                        LinkedIn Profile
+                    </a>
+                    <a href="https://harshbajpai1235.github.io/portfolio/" target="_blank" class="author-link portfolio-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        View Portfolio
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="spiral-container">
+            <div class="connection-line"></div>
+            <div class="thumbnail-grid stagger-animate">
+                <div class="thumbnail" onclick="scrollToSection('section1')">
+                    <div class="thumbnail-content">
+                        <div class="thumbnail-title">The Heidi Story</div>
+                    </div>
+                </div>
+                
+                <div class="thumbnail" onclick="scrollToSection('section2')">
+                    <div class="thumbnail-content">
+                        <div class="thumbnail-title">Documentation Crisis</div>
+                    </div>
+                </div>
+                
+                <div class="thumbnail" onclick="scrollToSection('section3')">
+                    <div class="thumbnail-content">
+                        <div class="thumbnail-title">$16.6M Opportunity</div>
+                    </div>
+                </div>
+                
+                <div class="thumbnail" onclick="scrollToSection('section4')">
+                    <div class="thumbnail-content">
+                        <div class="thumbnail-title">Product Vision</div>
+                    </div>
+                </div>
+                
+                <div class="thumbnail" onclick="scrollToSection('section5')">
+                    <div class="thumbnail-content">
+                        <div class="thumbnail-title">My Contribution</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Navigation -->
+    <div class="section-nav">
+        <button class="back-to-overview" onclick="scrollToOverview()">← Back to Overview</button>
+    </div>
+
+    <!-- Original Content Sections -->
+    <div class="container" style="margin-top: 100px;">
+        <!-- Section 1: The Heidi Health Story -->
+        <div id="section1" class="container" style="margin-top: 4rem;">
+            <div class="section-divider">
+                <div class="divider-line"></div>
+            </div>
+            
+            <div class="market-reality-hero animate-on-scroll">
+                <h1 class="reality-title">The Evolution Story</h1>
+                <p class="reality-subtitle">From Virtual Patients to Real Impact: How Heidi Health Cracked the Code</p>
+                <div class="reality-accent"></div>
+            </div>
+        
+        <div class="story-timeline stagger-animate">
+            <div class="story-item">
+                <div class="story-year">2019</div>
+                <div class="story-content">
+                    <h3 class="story-chapter">Chapter One: The Origin</h3>
+                    <p class="story-text">It all began with "Oscer" - an AI-powered clinical training platform that used virtual patients to revolutionize medical education. The vision was bold: could they make doctors better at diagnosis through AI simulation?</p>
+                </div>
+            </div>
+            
+            <div class="story-item">
+                <div class="story-year">2020-2022</div>
+                <div class="story-content">
+                    <h3 class="story-chapter">Chapter Two: The Hidden Lab</h3>
+                    <p class="story-text">Behind closed doors, 20+ clinicians were stress-testing AI under the radar. This wasn't about textbook scenarios anymore - they were building AI that could understand real medical conversations, the messy, complex reality of clinical practice.</p>
+                </div>
+            </div>
+            
+            <div class="story-item">
+                <div class="story-year">2023</div>
+                <div class="story-content">
+                    <h3 class="story-chapter">Chapter Three: The Pivot</h3>
+                    <p class="story-text">Then came the breakthrough insight: "Clinicians actually like doing clinical work; we should eradicate admin instead." The narrative shifted from AI as a "scary bogeyman" to AI as an "essential partner." This wasn't about replacing doctors - it was about freeing them.</p>
+                </div>
+            </div>
+            
+            <div class="story-item">
+                <div class="story-year">2024</div>
+                <div class="story-content">
+                    <h3 class="story-chapter">Chapter Four: The Launch</h3>
+                    <p class="story-text">Heidi went global with a free-forever model. The response was overwhelming - they had scratched a way bigger itch than they realized. Expansion to 50+ countries began, and the story was just getting started.</p>
+                </div>
+            </div>
+            
+            <div class="story-item">
+                <div class="story-year">2025</div>
+                <div class="story-content">
+                    <h3 class="story-chapter">Chapter Five: The Momentum</h3>
+                    <p class="story-text">Anthropic invests. 20M+ patient interactions processed. The future of clinical documentation isn't just here - it's being written, one conversation at a time.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="pivot-analysis">
+            <h2 class="pivot-title">The Strategic Pivot Decoded</h2>
+            
+            <div class="pivot-grid">
+                <div class="pivot-card">
+                    <h3>From Education</h3>
+                    <p><strong>Oscer:</strong> Teaching doctors through virtual patient simulations</p>
+                    <p class="pivot-question"><em>"How can we make doctors better at diagnosis?"</em></p>
+                </div>
+                
+                <div class="pivot-card">
+                    <h3>To Liberation</h3>
+                    <p><strong>Heidi:</strong> Freeing doctors from administrative burden</p>
+                    <p class="pivot-question"><em>"How can we make doctors happier at work?"</em></p>
+                </div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-card">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Countries Reached</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">20M+</span>
+                    <span class="stat-label">Patient Interactions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">$16.6M</span>
+                    <span class="stat-label">Recent Funding</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="strategy-lessons">
+            <div class="lessons-hero">
+                <h2 class="lessons-title">What This Teaches Us About Product Strategy</h2>
+                <p class="lessons-subtitle">Six key insights from Heidi's remarkable journey that every product strategist should understand</p>
+            </div>
+            
+            <div class="lessons-grid">
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">01</div>
+                        <div class="lesson-icon">🎯</div>
+                    </div>
+                    <div class="lesson-title">Build in Stealth, Launch with Thunder</div>
+                    <div class="lesson-description">2+ years of quiet development with real clinicians created unbeatable product-market fit before competitors knew what hit them.</div>
+                </div>
+                
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">02</div>
+                        <div class="lesson-icon">💡</div>
+                    </div>
+                    <div class="lesson-title">Solve the Human Problem, Not the Technical One</div>
+                    <div class="lesson-description">While competitors focused on "clinical decision support," Heidi realized doctors don't want AI to diagnose - they want their lives back.</div>
+                </div>
+                
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">03</div>
+                        <div class="lesson-icon">🚀</div>
+                    </div>
+                    <div class="lesson-title">Free Forever Beats Freemium</div>
+                    <div class="lesson-description">Most startups use free trials to convert. Heidi made core features permanently free, creating an unstoppable adoption flywheel.</div>
+                </div>
+                
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">04</div>
+                        <div class="lesson-icon">🌍</div>
+                    </div>
+                    <div class="lesson-title">Global from Day One</div>
+                    <div class="lesson-description">Instead of perfecting one market, they built for global scale immediately. 50+ countries in year one proves the strategy.</div>
+                </div>
+                
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">05</div>
+                        <div class="lesson-icon">⏰</div>
+                    </div>
+                    <div class="lesson-title">Timing is Everything</div>
+                    <div class="lesson-description">Launched exactly when AI sentiment shifted from "scary" to "essential" in healthcare. Perfect market timing amplified everything.</div>
+                </div>
+                
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">06</div>
+                        <div class="lesson-icon">❤️</div>
+                    </div>
+                    <div class="lesson-title">Culture Drives Product</div>
+                    <div class="lesson-description">"Returning joy to clinicians" isn't just marketing - it's their north star that influences every product decision.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="transition">
+            <h2>But what problems are they solving today?</h2>
+            <p style="font-size: 1.2rem; opacity: 0.9;">Now that we understand their evolution, let's dive into the current market reality and the pain points driving their explosive growth...</p>
+            <div class="cta-arrow">⬇️</div>
+        </div>
+    </div>
+
+    <!-- Section 2: Current Market Reality & Pain Points -->
+    <div id="section2" class="container" style="margin-top: 4rem;">
+        <div class="section-divider">
+            <div class="divider-line"></div>
+        </div>
+        
+        <div class="market-reality-hero animate-on-scroll">
+            <h1 class="reality-title">Current Market Reality</h1>
+            <p class="reality-subtitle">The brutal truth about clinical documentation and why doctors are burning out</p>
+            <div class="reality-accent"></div>
+        </div>
+        
+        <div class="stats-overview animate-fade-in">
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 1rem; color: #2D3748;">The Documentation Crisis</h2>
+            <div class="stats-grid stagger-animate">
+                <div class="stat-card">
+                    <span class="stat-number">50%</span>
+                    <span class="stat-label">of time NOT on patient care¹</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">2+ hrs</span>
+                    <span class="stat-label">daily admin work²</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">$65K</span>
+                    <span class="stat-label">lost annually per doctor¹</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">43.2%</span>
+                    <span class="stat-label">report physician burnout³</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; padding: 1rem; background: #f8fafc; border-radius: 10px; border-left: 4px solid #4299e1;">
+                <h3 style="font-size: 1.1rem; color: #2d3748; margin-bottom: 0.5rem;">📋 Data Sources & Methodology</h3>
+                <p style="font-size: 0.9rem; color: #4a5568; line-height: 1.5;">
+                    <strong>Sources:</strong><br>
+                    ¹ Heidi Health Market Research, 2024<br>
+                    ² Journal of Medical Practice Management, "Primary care physicians spend nearly 2 hours on EHR tasks per hour of patient care"<br>
+                    ³ AMA Physician Burnout Report, 2024 - 43.2% report burnout symptoms<br><br>
+                    <strong>Pain Point Matrix Disclaimer:</strong> Positioning based on analysis of clinician feedback from Reddit r/medicine, r/residency, Medscape forums, and healthcare research literature. Specific coordinates represent strategic analysis of impact vs. implementation difficulty.
+                </p>
+            </div>
+        </div>
+        
+        <div class="pain-matrix-section animate-scale-in">
+            <h2 class="section-title">🎯 Pain Point Priority Matrix</h2>
+            <p style="text-align: center; color: #4A5568; margin-bottom: 1rem;">Based on real clinician feedback from Reddit, medical forums, and research literature</p>
+            <div style="text-align: center; margin-bottom: 2rem; padding: 1rem; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                <p style="font-size: 0.9rem; color: #856404; margin: 0;">
+                    <strong>Analysis Note:</strong> Pain points are real (sourced from r/medicine, r/residency, Medscape). 
+                    Matrix positioning represents strategic analysis of relative impact vs. solution difficulty based on research and clinician feedback patterns.
+                </p>
+            </div>
+            
+            <div class="pain-matrix">
+                <div class="matrix-axis x-axis">Ease of Solution →</div>
+                <div class="matrix-axis y-axis">Impact on Daily Life</div>
+                
+                <div class="quadrant-label q1">Quick Wins</div>
+                <div class="quadrant-label q2">Major Projects</div>
+                <div class="quadrant-label q3">Fill-ins</div>
+                <div class="quadrant-label q4">Nice to Have</div>
+                
+                <!-- High Impact, Hard to Solve -->
+                <div class="pain-point high-impact" style="top: 20%; left: 15%; animation-delay: 0.2s;">
+                    <div class="pain-tooltip" style="bottom: 20px; left: -50px;">EHR System Overhaul</div>
+                </div>
+                
+                <div class="pain-point high-impact" style="top: 25%; left: 25%; animation-delay: 0.4s;">
+                    <div class="pain-tooltip" style="bottom: 20px; left: -60px;">Insurance Pre-auth Hell</div>
+                </div>
+                
+                <!-- High Impact, Easy to Solve -->
+                <div class="pain-point high-impact" style="top: 15%; left: 85%; animation-delay: 0.6s;">
+                    <div class="pain-tooltip" style="bottom: 20px; left: -40px;">Note Templates</div>
+                </div>
+                
+                <div class="pain-point high-impact" style="top: 30%; left: 80%; animation-delay: 0.8s;">
+                    <div class="pain-tooltip" style="bottom: 20px; left: -50px;">Voice Recognition</div>
+                </div>
+                
+                <div class="pain-point high-impact" style="top: 25%; left: 75%; animation-delay: 1.0s;">
+                    <div class="pain-tooltip" style="bottom: 20px; left: -60px;">Auto-generated Notes</div>
+                </div>
+                
+                <!-- Medium Impact, Various Difficulty -->
+                <div class="pain-point medium-impact" style="top: 50%; left: 30%; animation-delay: 1.2s;">
+                    <div class="pain-tooltip" style="bottom: 20px; left: -50px;">Multiple Logins</div>
+                </div>
+                
+                <div class="pain-point medium-impact" style="top: 55%; left: 70%; animation-delay: 1.4s;">
+                    <div class="pain-tooltip" style="bottom: 20px; left: -40px;">Copy-Paste Errors</div>
+                </div>
+                
+                <div class="pain-point medium-impact" style="top: 60%; left: 60%; animation-delay: 1.6s;">
+                    <div class="pain-tooltip" style="bottom: 20px; left: -50px;">Patient Handoffs</div>
+                </div>
+                
+                <!-- Low Impact -->
+                <div class="pain-point low-impact" style="top: 75%; left: 40%; animation-delay: 1.8s;">
+                    <div class="pain-tooltip" style="bottom: 20px; left: -40px;">Font Preferences</div>
+                </div>
+                
+                <div class="pain-point low-impact" style="top: 80%; left: 80%; animation-delay: 2.0s;">
+                    <div class="pain-tooltip" style="bottom: 20px; left: -50px;">Dashboard Colors</div>
+                </div>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-dot high-impact"></div>
+                    <span>High Impact</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot medium-impact"></div>
+                    <span>Medium Impact</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot low-impact"></div>
+                    <span>Low Impact</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="real-quotes">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">💬 Real Voices from the Trenches</h2>
+            <p style="text-align: center; opacity: 0.9;">Actual quotes from Reddit r/medicine, r/residency, and medical forums</p>
+            
+            <div class="quotes-container">
+                <div class="quote-card">
+                    <div class="quote-icon">"</div>
+                    <div class="quote-text">"I spend more time documenting what I did than actually doing it. Last night I stayed 3 hours after my shift just to finish notes. This isn't sustainable."</div>
+                    <div class="quote-source">- ER Physician, r/medicine</div>
+                </div>
+                
+                <div class="quote-card">
+                    <div class="quote-icon">"</div>
+                    <div class="quote-text">"Epic is like fighting a hydra. Every click spawns two more required fields. I became a doctor to help people, not to be a data entry clerk."</div>
+                    <div class="quote-source">- Internal Medicine, r/residency</div>
+                </div>
+                
+                <div class="quote-card">
+                    <div class="quote-icon">"</div>
+                    <div class="quote-text">"My notes don't even sound like me anymore. It's all template copy-paste garbage that no one reads. Where's the medicine in this?"</div>
+                    <div class="quote-source">- Family Medicine, Medscape</div>
+                </div>
+                
+                <div class="quote-card">
+                    <div class="quote-icon">"</div>
+                    <div class="quote-text">"I'm burning out not from difficult cases, but from clicking through 47 screens to document a simple visit. The system is broken."</div>
+                    <div class="quote-source">- Primary Care, Figure 1</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="psychology-analysis animate-slide-left">
+            <h2 class="section-title" style="color: #2D3748; font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 1rem;">🧠 The Psychology Behind the Pain</h2>
+            <p style="text-align: center; color: #4A5568; margin-bottom: 2rem; font-size: 1.1rem; font-weight: 500;">Understanding why traditional solutions fail and doctors resist change</p>
+            
+            <div class="psychology-grid stagger-animate">
+                <div class="psychology-card">
+                    <div class="psych-icon">🎯</div>
+                    <div class="psych-title">Purpose Misalignment</div>
+                    <div class="psych-description">Doctors became physicians to heal people, not to click through forms. Every minute on documentation feels like time stolen from their calling.</div>
+                </div>
+                
+                <div class="psychology-card">
+                    <div class="psych-icon">⚡</div>
+                    <div class="psych-title">Cognitive Overload</div>
+                    <div class="psych-description">After complex medical decisions all day, the last thing doctors want is to learn another complicated system. They need simplicity, not features.</div>
+                </div>
+                
+                <div class="psychology-card">
+                    <div class="psych-icon">🕒</div>
+                    <div class="psych-title">Time Anxiety</div>
+                    <div class="psych-description">Every documentation task feels urgent and overwhelming. The mental load of "I still have 12 notes to write" destroys work-life balance.</div>
+                </div>
+                
+                <div class="psychology-card">
+                    <div class="psych-icon">🎭</div>
+                    <div class="psych-title">Identity Crisis</div>
+                    <div class="psych-description">"Am I a doctor or a secretary?" Template-driven notes make physicians feel like they're losing their professional identity and voice.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="heidi-approach animate-slide-right">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: #2D3748;">Why Heidi's Approach Resonates Differently</h2>
+            <p style="color: #4A5568; font-size: 1.1rem;">While competitors focus on features, Heidi focuses on feelings</p>
+            
+            <div class="approach-comparison stagger-animate">
+                <div class="approach-card traditional">
+                    <div class="approach-title">❌ Traditional AI Scribes</div>
+                    <ul class="approach-list">
+                        <li>Focus on clinical decision support</li>
+                        <li>Complex feature-heavy interfaces</li>
+                        <li>Expensive subscription models</li>
+                        <li>Generic templates for everyone</li>
+                        <li>"Learn our system to save time"</li>
+                        <li>Built by engineers for hospitals</li>
+                        <li>Treat symptoms, not the disease</li>
+                    </ul>
+                </div>
+                
+                <div class="approach-card heidi">
+                    <div class="approach-title">✅ Heidi's Philosophy</div>
+                    <ul class="approach-list">
+                        <li>Focus on returning joy to medicine</li>
+                        <li>Intentionally simple 3-step process</li>
+                        <li>Free forever core features</li>
+                        <li>Notes that sound like YOU wrote them</li>
+                        <li>"We handle admin, you handle patients"</li>
+                        <li>Built by doctors for doctors</li>
+                        <li>Address the root cause: admin burden</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: The $16.6M Opportunity -->
+    <div id="section3" class="container" style="margin-top: 4rem;">
+        <div class="section-divider">
+            <div class="divider-line"></div>
+        </div>
+        
+        <div class="market-reality-hero animate-on-scroll">
+            <h1 class="reality-title">The $16.6M Opportunity</h1>
+            <p class="reality-subtitle">Fresh funding, strategic investors, and competitive positioning</p>
+            <div class="reality-accent"></div>
+        </div>
+        
+        <div class="funding-timeline animate-fade-in">
+            <div class="timeline-bg"></div>
+            <h2 class="section-title">🚀 Funding Momentum Analysis</h2>
+            
+            <div class="funding-rounds stagger-animate">
+                <div class="funding-line"></div>
+                
+                <div class="funding-round">
+                    <div class="round-date">2019-2022</div>
+                    <div class="round-amount">Bootstrap</div>
+                    <div class="round-lead">Oscer Development</div>
+                    <div class="round-milestone">Stealth R&D with 20+ clinicians</div>
+                </div>
+                
+                <div class="funding-round">
+                    <div class="round-date">Oct 2023</div>
+                    <div class="round-amount">$10M AUD</div>
+                    <div class="round-lead">Led by Blackbird</div>
+                    <div class="round-milestone">Series A - Global launch</div>
+                </div>
+                
+                <div class="funding-round highlight">
+                    <div class="round-date">March 2025</div>
+                    <div class="round-amount">$16.6M USD</div>
+                    <div class="round-lead">Led by Headline</div>
+                    <div class="round-milestone">Anthropic participation</div>
+                </div>
+            </div>
+            
+            <div class="source-note">
+                <h3>📋 Funding Data Sources</h3>
+                <p>
+                    <strong>Verified Sources:</strong> TechCrunch Series A announcement (Oct 2023), Headline funding press release (March 2025), 
+                    Anthropic Anthology fund participation confirmed. Timeline and milestones from Heidi Health company page.
+                </p>
+            </div>
+        </div>
+        
+
+        
+        <div class="anthropic-highlight">
+            <h2 class="anthropic-title">
+                The Anthropic Signal
+                <span style="font-size: 1.5rem;">Why Claude's Creator Invested</span>
+            </h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">Strategic implications of having a leading AI company in your cap table</p>
+            
+            <div class="anthropic-insights">
+                <div class="insight-card">
+                    <span class="insight-icon">🎯</span>
+                    <div class="insight-title">AI-First Healthcare Validation</div>
+                    <div class="insight-desc">Anthropic's investment signals confidence that ambient AI (not decision-support AI) is the winning approach in healthcare documentation.</div>
+                </div>
+                
+                <div class="insight-card">
+                    <span class="insight-icon">🔬</span>
+                    <div class="insight-title">Technical Partnership Potential</div>
+                    <div class="insight-desc">Access to cutting-edge language models, training methodologies, and potential integration opportunities with Claude's capabilities.</div>
+                </div>
+                
+                <div class="insight-card">
+                    <span class="insight-icon">📈</span>
+                    <div class="insight-title">Market Timing Confirmation</div>
+                    <div class="insight-desc">March 2025 timing suggests Anthropic sees medical AI adoption reaching critical mass - perfect storm of regulatory acceptance + AI capability.</div>
+                </div>
+                
+                <div class="insight-card">
+                    <span class="insight-icon">🏆</span>
+                    <div class="insight-title">Competitive Differentiation</div>
+                    <div class="insight-desc">Strategic alliance could create exclusive access to next-generation AI capabilities, widening the moat against competitors.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="market-sizing">
+            <h2 class="section-title">Total Addressable Market</h2>
+            <p style="text-align: center; color: #4A5568; margin-bottom: 2rem;">Real market data from industry research reports</p>
+            
+            <div class="market-stats">
+                <div class="market-card">
+                    <div class="market-title">Medical Transcription Software</div>
+                    <div class="market-size">$2.55B</div>
+                    <div class="market-growth">→ $8.41B (16.3% CAGR)</div>
+                    <div class="market-year">2024 → 2032</div>
+                </div>
+                
+                <div class="market-card">
+                    <div class="market-title">AI Medical Writing Market</div>
+                    <div class="market-size">$799M</div>
+                    <div class="market-growth">→ $2.60B (12.8% CAGR)</div>
+                    <div class="market-year">2023 → 2033</div>
+                </div>
+                
+                <div class="market-card">
+                    <div class="market-title">Healthcare AI Market</div>
+                    <div class="market-size">$45.2B</div>
+                    <div class="market-growth">→ $148.4B (36.1% CAGR)</div>
+                    <div class="market-year">2023 → 2028</div>
+                </div>
+            </div>
+            
+            <div class="source-note">
+                <h3>📋 Market Data Sources</h3>
+                <p>
+                    <strong>Verified Research:</strong><br>
+                    • Medical Transcription: Grand View Research, Market Research Future<br>
+                    • AI Medical Writing: DataHorizzon Research, MarketsandMarkets<br>
+                    • Healthcare AI: Fortune Business Insights, McKinsey Global Institute<br>
+                    All figures represent global market estimates from established research firms.
+                </p>
+            </div>
+        </div>
+        
+        <div class="competitive-analysis">
+            <h2 style="text-align: center; font-size: 2.8rem; margin-bottom: 1rem;">🏁 Competitive Funding Landscape</h2>
+            <p style="text-align: center; font-size: 1.2rem; opacity: 0.9;">How Heidi's funding compares to key competitors</p>
+            
+            <div class="competitive-grid">
+                <div class="competitor-card">
+                    <div class="competitor-name">🩺 Heidi Health</div>
+                    <div class="competitor-funding">$16.6M</div>
+                    <div class="competitor-stage">Series A+ (March 2025)</div>
+                    <div class="competitor-advantage">Anthropic backing, global reach (50+ countries), free-forever model</div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-name">🔊 Abridge</div>
+                    <div class="competitor-funding">$150M+</div>
+                    <div class="competitor-stage">Series C (2024)</div>
+                    <div class="competitor-advantage">Epic partnerships, US hospital focus, enterprise sales</div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-name">🏥 Nuance DAX</div>
+                    <div class="competitor-funding">Microsoft-owned</div>
+                    <div class="competitor-stage">Acquired 2021</div>
+                    <div class="competitor-advantage">Microsoft ecosystem, enterprise infrastructure</div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-name">🚀 Freed AI</div>
+                    <div class="competitor-funding">$20M+</div>
+                    <div class="competitor-stage">Series A (2024)</div>
+                    <div class="competitor-advantage">US-focused, venture-backed, subscription model</div>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+
+    <!-- Section 4: Product Vision & Innovation Roadmap -->
+    <div id="section4" class="container" style="margin-top: 4rem;">
+        <div class="section-divider">
+            <div class="divider-line"></div>
+        </div>
+        
+        <div class="market-reality-hero">
+            <h1 class="reality-title">Product Vision & Innovation</h1>
+            <p class="reality-subtitle">Beyond scribing: Features that truly return joy to clinicians</p>
+            <div class="reality-accent"></div>
+        </div>
+        
+        <div class="innovation-intro">
+            <div class="intro-bg"></div>
+            <h2 class="section-title">💡 My Product Vision for Heidi</h2>
+            <div class="innovation-philosophy">
+                Most AI scribes solve the <span class="philosophy-highlight">symptom</span> (slow documentation)<br>
+                but Heidi can solve the <span class="philosophy-highlight">root cause</span> (clinical cognitive overload)<br><br>
+                <strong>My recommendations:</strong> Four potential features that could further enhance <strong>cognitive clarity</strong>, <strong>emotional wellness</strong>, and <strong>peer learning</strong> building upon Heidi's existing foundation as a <span class="philosophy-highlight">trusted clinical companion</span>.
+            </div>
+            
+            <div class="product-innovation-note">
+                <div class="note-icon">💡</div>
+                <div class="note-content">
+                    <strong>Product Innovation Note:</strong> Based on my research, I'm not certain whether Heidi currently offers these specific features. If they don't <strong>exist yet</strong>, I'd love to recommend these four innovations as potential opportunities to differentiate beyond AI transcription and truly address the root causes of clinical burnout and cognitive overload.
+                </div>
+            </div>
+        </div>
+        
+        <div class="features-showcase">
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-title">
+                        <div class="feature-icon">🧠</div>
+                        Heidi Mind Map
+                    </div>
+                    <div class="feature-status">My Recommendation</div>
+                </div>
+                <div class="feature-subtitle">"See the patient's story, not just the data"</div>
+                
+                <div class="feature-content">
+                    <div>
+                        <div class="feature-description">
+                            A <strong>real-time, AI-generated visual network</strong> that connects patient problems, diagnoses, lab results, and care plans in an intuitive mind map format.
+                            <br><br>
+                            Unlike traditional EHRs that create cognitive overload through data-heavy interfaces, Mind Map lets clinicians <strong>instantly grasp patient context</strong> through visual storytelling.
+                            <br><br>
+                            Key innovations: <strong>Hover-triggered summaries</strong>, <strong>AI insight bubbles</strong> (flagging patterns like "Recent hypertension trend"), and <strong>one-click navigation</strong> to detailed records.
+                        </div>
+                        
+                        <div class="user-story">
+                            <div class="user-story-label">👩‍⚕️ User Story</div>
+                            <div class="user-story-text">
+                                "As a physician seeing a new patient, I want to see a visual map of their medical history so I can instantly understand their case context without digging through 10+ previous notes."
+                            </div>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-label">Time to Context</div>
+                                <div class="metric-desc">% reduction in time to understand new patient cases</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Cognitive Clarity</div>
+                                <div class="metric-desc">Clinician satisfaction score on case understanding</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Review Completeness</div>
+                                <div class="metric-desc">Increase in thorough chart review rates</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-mockup">
+                        <div class="mockup-title">Interactive Visual Prototype</div>
+                        <div class="mockup-elements">
+                            <div class="mockup-element">🏥 <strong>Central Node:</strong> Patient John D., Age 67</div>
+                            <div class="mockup-element">🩺 <strong>Problems:</strong> Hypertension → Diabetes → Recent chest pain</div>
+                            <div class="mockup-element">💊 <strong>Medications:</strong> Metformin, Lisinopril, Aspirin</div>
+                            <div class="mockup-element">⚠️ <strong>AI Insight:</strong> "BP trending up - last 3 visits"</div>
+                            <div class="mockup-element">📋 <strong>Pending:</strong> Cardio referral, A1C labs</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-title">
+                        <div class="feature-icon">🔁</div>
+                        Heidi Rewind
+                    </div>
+                    <div class="feature-status">My Recommendation</div>
+                </div>
+                <div class="feature-subtitle">"Your daily clinical memory, delivered with care"</div>
+                
+                <div class="feature-content">
+                    <div>
+                        <div class="feature-description">
+                            AI-generated <strong>end-of-day recap summaries</strong> of all patient interactions, documentation changes, and flagged follow-ups delivered as a digestible daily briefing.
+                            <br><br>
+                            Solves the problem of <strong>workflow memory loss</strong> and <strong>emotional closure</strong> physicians often leave work wondering "Did I miss anything important today?"
+                            <br><br>
+                            Features: <strong>Card-style patient summaries</strong>, <strong>AI priority tags</strong> ("Follow-up needed", "Unresolved note"), and <strong>shift handoff integration</strong>.
+                        </div>
+                        
+                        <div class="user-story">
+                            <div class="user-story-label">👨‍⚕️ User Story</div>
+                            <div class="user-story-text">
+                                "As a clinician finishing my shift, I want a comprehensive but concise summary of today's key patient interactions so I can review what matters without manually checking every chart."
+                            </div>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-label">Follow-up Accuracy</div>
+                                <div class="metric-desc">% decrease in missed patient follow-ups</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Handoff Efficiency</div>
+                                <div class="metric-desc">Time saved during shift transitions</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Daily Closure</div>
+                                <div class="metric-desc">Subjective "completeness" rating post-shift</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-mockup">
+                        <div class="mockup-title">Daily Recap Dashboard</div>
+                        <div class="mockup-elements">
+                            <div class="mockup-element">📊 <strong>Today's Summary:</strong> 12 patients seen, 3 follow-ups needed</div>
+                            <div class="mockup-element">🔄 <strong>Maria S.:</strong> Started new BP med - recheck in 2 weeks</div>
+                            <div class="mockup-element">⚠️ <strong>David L.:</strong> Chest pain - pending cardio consult</div>
+                            <div class="mockup-element">✅ <strong>Sarah K.:</strong> Diabetes stable - routine follow-up</div>
+                            <div class="mockup-element">📧 <strong>Send to:</strong> Email dashboard, or next shift team</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-title">
+                        <div class="feature-icon">🧑‍🏫</div>
+                        Heidi PeerShare
+                    </div>
+                    <div class="feature-status">My Recommendation</div>
+                </div>
+                <div class="feature-subtitle">"Learn from peers, share your wins"</div>
+                
+                <div class="feature-content">
+                    <div>
+                        <div class="feature-description">
+                            A <strong>community-driven learning platform</strong> within Heidi where clinicians share anonymized cases, AI prompts, documentation templates, and workflow hacks with peers globally.
+                            <br><br>
+                            Transforms Heidi from a tool into a <strong>learning network</strong>, supporting the "built by doctors, for doctors" identity while accelerating user adoption through peer learning.
+                            <br><br>
+                            Features: <strong>Searchable prompt library</strong>, <strong>specialty-specific templates</strong>, <strong>upvote system</strong>, and <strong>new user onboarding</strong> through peer examples.
+                        </div>
+                        
+                        <div class="user-story">
+                            <div class="user-story-label">👩‍⚕️ User Story</div>
+                            <div class="user-story-text">
+                                "As a new Heidi user, I want to learn from how experienced doctors are using AI prompts and templates in my specialty so I can become productive faster."
+                            </div>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-label">Community Growth</div>
+                                <div class="metric-desc">Number of shared prompts and templates</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">New User Success</div>
+                                <div class="metric-desc">Time-to-value for new users</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Peer Engagement</div>
+                                <div class="metric-desc">Weekly active users in PeerShare</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-mockup">
+                        <div class="mockup-title">Community Learning Hub</div>
+                        <div class="mockup-elements">
+                            <div class="mockup-element">🔍 <strong>Search:</strong> "Pediatrics SOAP templates" → 47 results</div>
+                            <div class="mockup-element">⭐ <strong>Top Prompt:</strong> "Quick developmental milestones" (234 upvotes)</div>
+                            <div class="mockup-element">🏷️ <strong>Tags:</strong> Emergency Medicine, Cardiology, Quick Notes</div>
+                            <div class="mockup-element">💬 <strong>Recent Share:</strong> "My 5-second allergy documentation hack"</div>
+                            <div class="mockup-element">👥 <strong>Contributors:</strong> 2,847 clinicians sharing knowledge</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-title">
+                        <div class="feature-icon">❤️</div>
+                        Heidi Pulse
+                    </div>
+                    <div class="feature-status">My Recommendation</div>
+                </div>
+                <div class="feature-subtitle">"Because doctors are human too"</div>
+                
+                <div class="feature-content">
+                    <div>
+                        <div class="feature-description">
+                            An <strong>AI-powered clinician wellness tracker</strong> that silently monitors behavioral signals and emotional tone to flag burnout risk and offer gentle nudges without judgment or intrusion.
+                            <br><br>
+                            <strong>Revolutionary approach:</strong> No other AI scribe proactively supports clinician emotional wellbeing. This goes beyond documentation efficiency to actually <strong>care for the caregiver</strong>.
+                            <br><br>
+                            Features: <strong>Mood drift detection</strong> (analyzing language tone), <strong>admin overload alerts</strong> (flagging excessive after-hours work), and <strong>empathetic nudges</strong> with actionable wellness suggestions.
+                        </div>
+                        
+                        <div class="user-story">
+                            <div class="user-story-label">👨‍⚕️ User Story</div>
+                            <div class="user-story-text">
+                                "As a physician, I want Heidi to quietly track my wellbeing patterns and gently alert me if I'm showing signs of burnout so I can take action before it affects my patient care or my health."
+                            </div>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-label">Pajama Time</div>
+                                <div class="metric-desc">% reduction in after-hours documentation</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Wellness NPS</div>
+                                <div class="metric-desc">NPS uplift for high-burnout-risk users</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Proactive Care</div>
+                                <div class="metric-desc">Early burnout detection accuracy rate</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-mockup">
+                        <div class="mockup-title">Wellness Dashboard</div>
+                        <div class="pulse-mockup">
+                            <div class="pulse-widget">
+                                <div class="pulse-indicator pulse-warning">⚠️</div>
+                                <strong>After Hours</strong><br>
+                                <small>18 notes this week</small>
+                            </div>
+                            <div class="pulse-widget">
+                                <div style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; padding: 0.8rem; border-radius: 8px; font-size: 0.9rem;">
+                                    💡 <strong>Gentle Nudge:</strong><br>
+                                    "You've been working late. Can we simplify your templates?"
+                                </div>
+                            </div>
+                            <div class="pulse-widget">
+                                <div style="background: #f7fafc; padding: 0.8rem; border-radius: 8px; font-size: 0.9rem; color: #2d3748;">
+                                    📊 <strong>This Week:</strong><br>
+                                    32 hours in Heidi<br>
+                                    Most used: Quick SOAP
+                                </div>
+                            </div>
+                            <div class="pulse-widget">
+                                <div class="pulse-indicator pulse-good">😊</div>
+                                <strong>Mood Trend</strong><br>
+                                <small>Stable this week</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        
+        <div class="strategic-impact">
+            <h2 class="section-title">🎯 Strategic Business Impact</h2>
+            <p style="text-align: center; color: #4A5568; margin-bottom: 2rem; font-size: 1.1rem;">
+                How these innovations position Heidi as the definitive clinical AI platform
+            </p>
+            
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <span class="impact-icon">🏆</span>
+                    <div class="impact-title">Competitive Differentiation</div>
+                    <div class="impact-desc">
+                        While competitors focus on transcription speed, Heidi addresses the deeper issue of clinical cognitive overload creating a truly defensible moat.
+                    </div>
+                </div>
+                
+                <div class="impact-card">
+                    <span class="impact-icon">🔄</span>
+                    <div class="impact-title">User Retention & Stickiness</div>
+                    <div class="impact-desc">
+                        Features like Pulse and PeerShare create emotional connection and community users won't just use Heidi, they'll depend on it for wellbeing.
+                    </div>
+                </div>
+                
+                <div class="impact-card">
+                    <span class="impact-icon">📈</span>
+                    <div class="impact-title">Network Effects</div>
+                    <div class="impact-desc">
+                        PeerShare creates viral adoption through knowledge sharing every new user makes the platform more valuable for existing users.
+                    </div>
+                </div>
+                
+                <div class="impact-card">
+                    <span class="impact-icon">🌍</span>
+                    <div class="impact-title">Global Expansion Enabler</div>
+                    <div class="impact-desc">
+                        Community-driven learning helps Heidi adapt to local clinical practices faster than traditional market research in new countries.
+                    </div>
+                </div>
+                
+                <div class="impact-card">
+                    <span class="impact-icon">💡</span>
+                    <div class="impact-title">Data Flywheel</div>
+                    <div class="impact-desc">
+                        Wellness tracking and usage patterns provide unique dataset for AI improvement better insights lead to better features lead to more users.
+                    </div>
+                </div>
+                
+                <div class="impact-card">
+                    <span class="impact-icon">💰</span>
+                    <div class="impact-title">Revenue Diversification</div>
+                    <div class="impact-desc">
+                        Opens paths to wellness-focused premium tiers, enterprise mental health partnerships, and clinical research collaboration opportunities.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        
+        <div class="source-note">
+            <h3>📋 Research & Inspiration Sources</h3>
+            <p>
+                <strong>Clinical Burnout Research:</strong> AMA Practice Management (2024), Mayo Clinic Proceedings wellness studies<br>
+                <strong>UI/UX Inspiration:</strong> Figma community health dashboards, Apple Health app patterns, Headspace wellness design<br>
+                <strong>Competitive Analysis:</strong> Current AI scribe offerings from Nuance DAX, Abridge, Freed AI, and traditional EHR systems<br>
+                <strong>Technical Feasibility:</strong> Anthropic Claude capabilities, sentiment analysis research, privacy-preserving health analytics
+            </p>
+        </div>
+    </div>
+
+    <!-- Section 5: From Curiosity to Contribution -->
+    <div id="section5" class="container" style="margin-top: 4rem;">
+        <div class="section-divider">
+            <div class="divider-line"></div>
+        </div>
+        
+        <div class="market-reality-hero">
+            <h1 class="reality-title">From Curiosity to Contribution</h1>
+            <p class="reality-subtitle">How I plan to learn fast, contribute meaningfully, and grow with the Heidi team</p>
+            <div class="reality-accent"></div>
+        </div>
+        
+        <div class="personal-intro">
+            <div class="intro-bg"></div>
+            <h2 class="section-title" style="color: #2D3748; font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 1rem;">Why I'm Here</h2>
+            <div class="personal-statement" style="color: #4A5568; font-size: 1.2rem; line-height: 1.8; text-align: center; font-weight: 500;">
+                I love learning. I build with AI. I care about solving real problems through <span class="highlight-text">data, design, and product thinking</span>. 
+                And I thrive when things <span class="highlight-text">move fast and matter</span>.<br><br>
+                Heidi feels like that kind of place and I'd be proud to <span class="highlight-text">grow, adapt, and contribute here</span>.
+            </div>
+        </div>
+        
+        <div class="timeline-container">
+            <div class="timeline-bg"></div>
+            <h2 class="timeline-title">My 12-Week Learning & Impact Plan</h2>
+            
+            <div class="timeline-phases">
+                <div class="timeline-connector"></div>
+                
+                <div class="phase-card">
+                    <div class="phase-icon">👂</div>
+                    <div class="phase-content">
+                        <div class="phase-header">
+                            <div class="phase-title">Listen and Learn</div>
+                            <div class="phase-duration">Weeks 1-4</div>
+                        </div>
+                        <ul class="phase-activities">
+                            <li>Join onboarding with product, design, and clinician teams</li>
+                            <li>Shadow user interviews and internal meetings to absorb context</li>
+                            <li>Explore how Heidi collects and uses data across the platform</li>
+                            <li>Understand the product's impact from both user and business angles</li>
+                        </ul>
+                        <div class="phase-focus">
+                            <strong>Focus:</strong> Ask better questions. Learn the system. Spot patterns.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="phase-card">
+                    <div class="phase-icon">🔧</div>
+                    <div class="phase-content">
+                        <div class="phase-header">
+                            <div class="phase-title">Start Contributing</div>
+                            <div class="phase-duration">Weeks 5-8</div>
+                        </div>
+                        <ul class="phase-activities">
+                            <li>Support a feature experiment or internal project</li>
+                            <li>Help analyze product usage data</li>
+                            <li>Assist in simplifying documentation workflows or uncovering bottlenecks</li>
+                            <li>Share insights through a small memo, deck, or internal dashboard</li>
+                        </ul>
+                        <div class="phase-focus">
+                            <strong>Focus:</strong> Add value where I can. Make small things better with data and care.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="phase-card">
+                    <div class="phase-icon">📈</div>
+                    <div class="phase-content">
+                        <div class="phase-header">
+                            <div class="phase-title">Deepen and Deliver</div>
+                            <div class="phase-duration">Weeks 9-12</div>
+                        </div>
+                        <ul class="phase-activities">
+                            <li>Own a small initiative that improves the product or internal workflow</li>
+                            <li>Propose an idea supported by data or user feedback</li>
+                            <li>Help measure impact of something recently shipped</li>
+                            <li>Contribute to product discussions with thoughtful insight</li>
+                        </ul>
+                        <div class="phase-focus">
+                            <strong>Focus:</strong> Apply what I've learned. Think like a product team member.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="skills-showcase">
+            <h2 class="skills-title">What I Bring to the Table</h2>
+            <p style="text-align: center; font-size: 1.1rem; opacity: 0.9; margin-bottom: 2rem;">
+                Skills and experiences that help me contribute from day one
+            </p>
+            
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <span class="skill-icon">📊</span>
+                    <div class="skill-title">Data & Analysis</div>
+                    <div class="skill-list">
+                        SQL • Python • Excel<br>
+                        A/B Testing • User Research<br>
+                        KPI Definition • Metrics Analysis
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <span class="skill-icon">🎨</span>
+                    <div class="skill-title">Product & Design</div>
+                    <div class="skill-list">
+                        User Experience • Wireframing<br>
+                        Figma • Prototyping<br>
+                        Design Systems • Usability Testing
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <span class="skill-icon">🤖</span>
+                    <div class="skill-title">AI & Technology</div>
+                    <div class="skill-list">
+                        LLM Integration • Prompt Engineering<br>
+                        API Development • Machine Learning<br>
+                        Healthcare Tech • Privacy Compliance
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <span class="skill-icon">💡</span>
+                    <div class="skill-title">Strategic Thinking</div>
+                    <div class="skill-list">
+                        Market Research • Competitive Analysis<br>
+                        Business Strategy • Growth Planning<br>
+                        Stakeholder Communication
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="motivation-section">
+            <h2 class="motivation-title">Why I'm Excited About Heidi</h2>
+            
+            <div class="motivation-cards">
+                <div class="motivation-card">
+                    <span class="motivation-icon">🎯</span>
+                    <div class="motivation-text">
+                        <strong>Mission Alignment</strong><br>
+                        Returning joy to clinicians isn't just a tagline it's a fundamental human problem worth solving at scale.
+                    </div>
+                </div>
+                
+                <div class="motivation-card">
+                    <span class="motivation-icon">⚡</span>
+                    <div class="motivation-text">
+                        <strong>Rapid Growth Phase</strong><br>
+                        50+ countries, fresh funding, Anthropic partnership this is the perfect time to learn and contribute.
+                    </div>
+                </div>
+                
+                <div class="motivation-card">
+                    <span class="motivation-icon">🧠</span>
+                    <div class="motivation-text">
+                        <strong>AI Innovation</strong><br>
+                        Building the next generation of ambient AI in healthcare at the intersection of technology and humanity.
+                    </div>
+                </div>
+                
+                <div class="motivation-card">
+                    <span class="motivation-icon">🌍</span>
+                    <div class="motivation-text">
+                        <strong>Global Impact</strong><br>
+                        Every feature we build affects thousands of clinicians and millions of patients worldwide.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="closing-statement animate-bounce-up">
+            <div class="closing-bg"></div>
+            <div class="closing-content">
+                <h2 class="closing-title">Ready to Contribute 🚀</h2>
+                <div class="closing-text">
+                    I built this entire analysis within 36 hours of seeing the Product Intern role posted because when something excites me this much, I can't help but dive deep.
+                    <br><br>
+                    <strong>I'm excited to learn, grow, and contribute to Heidi's mission of returning joy to clinicians.</strong>
+                </div>
+                <div class="closing-buttons stagger-animate">
+                    <a href="mailto:bajpaih03@gmail.com" class="closing-cta">
+                        📧 Email Me
+                    </a>
+                    <a href="https://www.linkedin.com/in/harsh-bajpai22/" class="closing-cta" target="_blank" rel="noopener noreferrer">
+                        💼 LinkedIn Profile
+                    </a>
+                    <a href="https://harshbajpai1235.github.io/portfolio/" class="closing-cta" target="_blank" rel="noopener noreferrer">
+                        🎨 View Portfolio
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="source-note">
+            <h3>📝 Personal Note</h3>
+            <p>
+                This entire analysis and application represents my genuine excitement about Heidi Health's mission and potential. 
+                Every insight, feature idea, and strategic recommendation comes from hours of research, competitive analysis, 
+                and deep thinking about how AI can truly serve healthcare professionals. I'm ready to bring this same level 
+                of thoughtfulness and dedication to the Product Intern role.
+            </p>
+        </div>
+    </div>
+
+    <!-- JavaScript for Navigation -->
+    <script>
+        // Function to scroll to specific section
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                // Show section navigation
+                document.querySelector('.section-nav').style.display = 'block';
+                
+                // Smooth scroll to section
+                section.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Add dramatic transition effect
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(50px)';
+                
+                setTimeout(() => {
+                    section.style.transition = 'all 0.8s ease';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, 300);
+            }
+        }
+
+        // Function to scroll back to overview
+        function scrollToOverview() {
+            // Hide section navigation
+            document.querySelector('.section-nav').style.display = 'none';
+            
+            // Smooth scroll to top
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Show section navigation when scrolling down
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const sectionNav = document.querySelector('.section-nav');
+            
+            if (scrollTop > window.innerHeight) {
+                sectionNav.style.display = 'block';
+            } else {
+                sectionNav.style.display = 'none';
+            }
+        });
+
+        // Add hover effects to thumbnails
+        document.addEventListener('DOMContentLoaded', function() {
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('mouseenter', function() {
+                    this.style.transform = this.style.transform.replace('scale(1)', 'scale(1.1)');
+                });
+                
+                thumbnail.addEventListener('mouseleave', function() {
+                    this.style.transform = this.style.transform.replace('scale(1.1)', 'scale(1)');
+                });
+            });
+
+            // Initial load animations
+            setTimeout(() => {
+                const initialElements = document.querySelectorAll('.initial-load');
+                initialElements.forEach((element, index) => {
+                    setTimeout(() => {
+                        element.classList.add('animate-in');
+                    }, index * 200);
+                });
+
+                // Animate thumbnails with stagger
+                const thumbnailGrid = document.querySelector('.thumbnail-grid');
+                if (thumbnailGrid) {
+                    setTimeout(() => {
+                        thumbnailGrid.classList.add('animate-in');
+                    }, 1000);
+                }
+            }, 500);
+
+            // Scroll-triggered animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all animated elements
+            const animatedElements = document.querySelectorAll('.animate-on-scroll, .animate-fade-in, .animate-slide-left, .animate-slide-right, .animate-scale-in, .animate-bounce-up, .stagger-animate');
+            animatedElements.forEach(element => {
+                observer.observe(element);
+            });
+        });
+    </script>
+</body>
+</html> 
